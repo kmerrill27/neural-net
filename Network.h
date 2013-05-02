@@ -6,6 +6,7 @@
 #include "Layer.h"
 
 #include <iostream>
+#include <fstream>
 
 /**
  * Network defines a network with an arbitrary number of hidden layers
@@ -142,7 +143,7 @@ void showWeights(const char* msg) const;
  * Save the sensitivity and weights to a file.
  */
 
-void saveWeights(FILE* weightFile);
+void saveWeights(std::ofstream& weightStream);
 
 /**
  * destructor

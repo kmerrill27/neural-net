@@ -209,11 +209,11 @@ void Layer::showWeights(const char* title) const
  * Save the sensitivity and weights to a file.
  */
 
-void Layer::saveWeights(FILE* weightFile)
+void Layer::saveWeights(std::ofstream& weightStream)
   {
   for( int i = 0; i < numberInLayer; i++ )
     {
-    neuron[i].saveWeights(weightFile);
+    neuron[i].saveWeights(weightStream);
     }
   }
 

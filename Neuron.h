@@ -8,6 +8,7 @@
 
 #include "ActivationFunction.h"
 #include "Source.h"
+#include <fstream>
 
 /**
  * A Neuron has a set of weights.
@@ -209,8 +210,8 @@ void showWeights(const char* title);
 /**
  * Save the sensitivity and weights to a file.
  */
- 
-void saveWeights(FILE* weightFile);
+
+void saveWeights(std::ofstream& weightStream);
 
 /**
  * Destructor

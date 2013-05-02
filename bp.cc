@@ -300,10 +300,9 @@ Trace::setLevel(getInteger(argv[6]));
 
 char* weightFilename = argv[7];
 
-FILE* weightFile;
-weightFile = fopen(weightFilename, "w");
+std::ofstream weightStream(weightFilename);
 
-if( weightFile )
+if( weightStream )
   {
   printf("Weights will be saved in: %s\n", weightFilename);
   }
@@ -610,8 +609,7 @@ if( Trace::atLevel(1) )
 std::cout << "\nFinal Weights:" << std::endl;
 
 network.showWeights("final");
-fprintf(weightFile, "%d\n%d\n\n", outputDimension, inputDimension);
-network.saveWeights(weightFile);
+network.saveWeights(weightStream);
 
 // Show performance on all samples
 

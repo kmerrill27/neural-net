@@ -144,8 +144,8 @@ void showWeights(const char* title) const;
 /**
  * Save the sensitivity and weights to a file.
  */
- 
-void saveWeights(FILE* weightFile);
+
+void saveWeights(std::ofstream& weightStream);
 
 /**
  * Show the output on the standard output stream.

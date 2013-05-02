@@ -295,14 +295,15 @@ void Neuron::showWeights(const char* title)
  * Save the sensitivity and weights to a file.
  */
 
-void Neuron::saveWeights(FILE* weightFile)
+void Neuron::saveWeights(std::ofstream& weightStream)
   {
-  fprintf(weightFile, "%d\n%d\n", layerIndex, neuronIndex);
+  weightStream << layerIndex << std::endl << neuronIndex << std::endl;
+  weightStream << numberOfInputs << std::endl;
   for( int j = 0; j <= numberOfInputs; j++ )
     {
-    fprintf(weightFile, "%f\n", weight[j]);
+    weightStream << weight[j] << std::endl;
     }
-  fprintf(weightFile, "%f\n\n", sensitivity);
+  weightStream << sensitivity << std::endl;
   }
 
 /**

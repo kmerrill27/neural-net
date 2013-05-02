@@ -259,11 +259,11 @@ void Network::showWeights(const char* msg) const
  * Save the sensitivity and weights to a file.
  */
 
-void Network::saveWeights(FILE* weightFile)
+void Network::saveWeights(std::ofstream& weightStream)
   {
   for( int i = 0; i < numberLayers; i++ )
     {
-    layer[i]->saveWeights(weightFile);
+    layer[i]->saveWeights(weightStream);
     }
   }
 
