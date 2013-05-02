@@ -172,6 +172,14 @@ void Network::setSensitivity(const Sample& sample)
     }
   }
 
+/**
+ * Set weight to a specific value
+ */
+
+void Network::setWeight(int layerNum, int neuronNum, int weightNum, double weightVal)
+  {
+  layer[layerNum]->setWeight(neuronNum, weightNum, weightVal);
+  }
 
 /**
  * Adjust the weights of a network based on error values of a given Sample and
@@ -247,6 +255,17 @@ void Network::showWeights(const char* msg) const
     }
   }
 
+/**
+ * Save the sensitivity and weights to a file.
+ */
+
+void Network::saveWeights(FILE* weightFile)
+  {
+  for( int i = 0; i < numberLayers; i++ )
+    {
+    layer[i]->saveWeights(weightFile);
+    }
+  }
 
 /**
  * destructor

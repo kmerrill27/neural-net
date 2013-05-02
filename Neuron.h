@@ -206,6 +206,11 @@ void addWeight(int weightIndex, double factor, double input);
 
 void showWeights(const char* title);
 
+/**
+ * Save the sensitivity and weights to a file.
+ */
+ 
+void saveWeights(FILE* weightFile);
 
 /**
  * Destructor

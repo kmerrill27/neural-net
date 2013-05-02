@@ -105,6 +105,11 @@ int computeUsageError(const Sample& sample);
 
 void setSensitivity(const Sample& sample);
 
+/**
+ * Set weight to a specific value
+ */
+
+void setWeight(int layerNum, int neuronNum, int weightNum, double weightVal);
 
 /**
  * Adjust the weights of a network based on error values of a given Sample and
@@ -133,6 +138,11 @@ void adjustByRprop(double etaPlus, double etaMinus);
 
 void showWeights(const char* msg) const;
 
+/**
+ * Save the sensitivity and weights to a file.
+ */
+
+void saveWeights(FILE* weightFile);
 
 /**
  * destructor

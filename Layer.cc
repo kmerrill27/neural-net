@@ -121,7 +121,7 @@ double Layer::getSumWeightedSensitivity(int i) const
 
 
 /**
- * Set weight to a specific value
+ * Set weight to a specific values
  */
 
 void Layer::setWeight(int i, int j, double weight)
@@ -205,6 +205,17 @@ void Layer::showWeights(const char* title) const
     }
   }
 
+/**
+ * Save the sensitivity and weights to a file.
+ */
+
+void Layer::saveWeights(FILE* weightFile)
+  {
+  for( int i = 0; i < numberInLayer; i++ )
+    {
+    neuron[i].saveWeights(weightFile);
+    }
+  }
 
 /**
  * Show the outputs on the standard output stream.

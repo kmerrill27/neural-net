@@ -298,17 +298,18 @@ mode = (MODE)modeInt;
 
 Trace::setLevel(getInteger(argv[6]));
 
-char* weightFile = argv[7];
+char* weightFilename = argv[7];
 
-std::ofstream weightStream(weightFile);
+FILE* weightFile;
+weightFile = fopen(weightFilename, "w");
 
-if( weightStream )
+if( weightFile )
   {
-  printf("Weights will be saved in: %s\n", weightFile);
+  printf("Weights will be saved in: %s\n", weightFilename);
   }
 else
   {
-  printf("Could not create weight file: %s\n", weightFile);
+  printf("Could not create weight file: %s\n", weightFilename);
   }
 
 numberLayers = getInteger(argv[8]);
@@ -609,6 +610,8 @@ if( Trace::atLevel(1) )
 std::cout << "\nFinal Weights:" << std::endl;
 
 network.showWeights("final");
+fprintf(weightFile, "%d\n%d\n\n", outputDimension, inputDimension);
+network.saveWeights(weightFile);
 
 // Show performance on all samples
 

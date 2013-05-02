@@ -281,7 +281,7 @@ void Neuron::addWeight(int weightIndex, double factor, double input)
 
 void Neuron::showWeights(const char* title)
   {
-  printf("layer %d neuron %d %s weights: ", layerIndex, neuronIndex, title);
+  printf("layer %d neuron %d %s weights: \n", layerIndex, neuronIndex, title);
 
   for( int j = 0; j <= numberOfInputs; j++ )
     {
@@ -291,6 +291,19 @@ void Neuron::showWeights(const char* title)
   printf("(bias) sensitivity: % 7.4f \n", sensitivity);
   }
 
+/**
+ * Save the sensitivity and weights to a file.
+ */
+
+void Neuron::saveWeights(FILE* weightFile)
+  {
+  fprintf(weightFile, "%d\n%d\n", layerIndex, neuronIndex);
+  for( int j = 0; j <= numberOfInputs; j++ )
+    {
+    fprintf(weightFile, "%f\n", weight[j]);
+    }
+  fprintf(weightFile, "%f\n\n", sensitivity);
+  }
 
 /**
  * Destructor

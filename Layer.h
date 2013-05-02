@@ -141,6 +141,11 @@ void adjustByRprop(double etaPlus, double etaMinus);
 
 void showWeights(const char* title) const;
 
+/**
+ * Save the sensitivity and weights to a file.
+ */
+ 
+void saveWeights(FILE* weightFile);
 
 /**
  * Show the output on the standard output stream.
