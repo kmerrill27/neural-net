@@ -261,6 +261,11 @@ void Layer::setSensitivity(const Sample& sample)
     }
   }
 
+void Layer::setFixedSensitivity(int i, double sensitivity)
+  {
+  assert( i < numberInLayer );
+  neuron[i].setFixedSensitivity(sensitivity);
+  }
 
 /**
  * Compute the error of the Output Layer,

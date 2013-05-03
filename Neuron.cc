@@ -10,6 +10,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 
 /**
@@ -257,6 +258,10 @@ void Neuron::setSensitivity(double factor)
   sensitivity = deriv*factor;
   }
 
+void Neuron::setFixedSensitivity(double s)
+{
+  sensitivity = s;
+}
 
 /**
  * Add an increment to a weight.

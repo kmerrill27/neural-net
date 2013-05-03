@@ -172,6 +172,11 @@ void Network::setSensitivity(const Sample& sample)
     }
   }
 
+void Network::setFixedSensitivity(int i, int j, double sensitivity)
+  {
+    layer[i]->setFixedSensitivity(j, sensitivity);
+  }
+
 /**
  * Set weight to a specific value
  */

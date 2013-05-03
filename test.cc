@@ -76,18 +76,14 @@ if( argc <= minimumParameters )
   int layer, neuron;
   double sensitivity;
   while (weightStream >> layer) {
-    std::cout << layer << std::endl;
   	weightStream >> neuron;
-  	std::cout << neuron << std::endl;
   	getNextNeuronWeights(weightStream, weights);
+    std::cout << "sensitivity " << sensitivity << std::endl;
     weightStream >> sensitivity;
-    std::cout << sensitivity << std::endl;
-    std::cout << weights.size() << std::endl;
+    network.setFixedSensitivity(layer, neuron, sensitivity);
   	for (std::vector<double>::size_type i = 0; i < weights.size(); i++) {
-      //std::cout << i << std::endl;
   		network.setWeight(layer, neuron, i, weights.at(i));
   	}
-    network.showWeights("final");
-  	// find way to setSensitivty not from Sample
   }
+  network.showWeights("final");
 }

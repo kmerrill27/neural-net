@@ -106,6 +106,8 @@ int computeUsageError(const Sample& sample);
 
 void setSensitivity(const Sample& sample);
 
+void setFixedSensitivity(int i, int j, double sensitivity);
+
 /**
  * Set weight to a specific value
  */

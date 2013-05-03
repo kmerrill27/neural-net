@@ -147,6 +147,8 @@ void showWeights(const char* title) const;
 
 void saveWeights(std::ofstream& weightStream);
 
+void setFixedSensitivity(int i, double sensitivity);
+
 /**
  * Show the output on the standard output stream.
  */

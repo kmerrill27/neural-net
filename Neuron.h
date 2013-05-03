@@ -192,7 +192,7 @@ void setWeight(int j, double _weight);
 
 void setSensitivity(double factor);
 
-
+void setFixedSensitivity(double sensitivity);
 
 /**
  * Add an increment to a weight.
