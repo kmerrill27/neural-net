@@ -40,7 +40,7 @@ clean :
 
 # object files
 
-OBJS =  bp.o \
+OBJS =  test.o \
         Hardlim.o \
         Hardlims.o \
         Network.o \
@@ -60,8 +60,8 @@ OBJS =  bp.o \
 $(EXE) : $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) $(LIBS)
 
-bp.o : bp.cc
-	$(CXX) -c $(CXXFLAGS) bp.cc
+test.o : test.cc
+	$(CXX) -c $(CXXFLAGS) test.cc
 
 Hardlim.o : Hardlim.h Hardlim.cc ActivationFunction.h
 	$(CXX) -c $(CXXFLAGS) Hardlim.cc
