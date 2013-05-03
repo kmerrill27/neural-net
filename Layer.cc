@@ -41,11 +41,13 @@ void Layer::init(int _layerIndex, int _numberInLayer, ActivationFunction* _type,
 
   numberInLayer = _numberInLayer;
 
+  type = _type;
+
   assert( neuron = new Neuron[numberInLayer] );
 
   for( int i = 0; i < numberInLayer; i++ )
     {
-    neuron[i].init(layerIndex, i, _type, _numberOfInputs);	// initialize neuron and weights
+    neuron[i].init(layerIndex, i, type, _numberOfInputs);	// initialize neuron and weights
     }
   }
 
@@ -69,6 +71,10 @@ int Layer::getSize() const
   return numberInLayer;
   }
 
+std::string Layer::getType() const
+{
+  return type->getName();
+}
 
 /**
  * Get the output value of the ith neuron.

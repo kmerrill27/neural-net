@@ -5,6 +5,8 @@
 #ifndef __Layer__
 #define __Layer__
 
+#include <string>
+
 #include "ActivationFunction.h"
 #include "Neuron.h"
 #include "Sample.h"
@@ -17,6 +19,8 @@
 class Layer : public Source
 {
 protected:
+
+ActivationFunction* type;
 
 /**
  * the number of Neurons in the layer
@@ -76,6 +80,7 @@ int getIndex() const;
 
 int getSize() const;
 
+std::string getType() const;
 
 /**
  * Get the output value of the ith neuron in this layer.

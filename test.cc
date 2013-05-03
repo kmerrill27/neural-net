@@ -1,13 +1,19 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include "Network.h"
 #include "ActivationFunction.h"
 #include "Logsig.h"
 #include "Purelin.h"
 
-const int	minimumParameters = 0;
+const int	minimumParameters = 2;
+
+int inputDimension;
+int numberLayers;
+int* layerSize;
+ActivationFunction** layerType;
 
 ActivationFunction* logsig  = new Logsig();
 ActivationFunction* purelin = new Purelin();
@@ -21,17 +27,31 @@ ActivationFunction* getLayerType(std::string name)
   exit(1);  
   }
 
-void getNextNeuronWeights(std::ifstream& weightStream, std::vector<double>& weights)
+void loadNextNeuronWeights(std::ifstream& weightStream, std::vector<double>& weights)
 {
   int numberOfInputs;
   double weight;
-  weightStream >> numberOfInputs;
   weights.clear();
   for( int i = 0; i <= numberOfInputs && weightStream >> weight; i++  )
     {
-      std::cout << "WEIGHT " << i << ": " << weight << std::endl;
       weights.push_back(weight);
     }
+}
+
+void loadStats(std::ifstream& weightStream)
+{
+  int lSize;
+  std::string lType;
+
+  weightStream >> inputDimension;
+  weightStream >> numberLayers;
+
+  for (int i = 0; i < numberLayers && weightStream >> lSize; i++)
+  {
+    layerSize[i] = lSize;
+    weightStream >> lType;
+    layerType[i] = getLayerType(lType);
+  }
 }
 
 /**
@@ -43,47 +63,39 @@ int main(int argc, char** argv)
 
 if( argc <= minimumParameters )
   {
-  std::cout << "parameters: <saved weight file> <number of layers> <layer type> "
-  			   "<number in layer> ... <test file>"
-            << std::endl;
+  std::cout << "parameters: <saved weight file> <test file>" << std::endl;
   exit(0);
   }
 
-  char* weightFilename = "licks.weights.save";
+  char* weightFilename = argv[1];
 
   std::cout << "weight file: " << weightFilename << std::endl;
 
   std::ifstream weightStream(weightFilename);
 
-  int numberLayers = 2;
-  int* layerSize = new int[numberLayers];
-  int inputDimension = 424;
-  ActivationFunction** layerType;
-  layerType = new ActivationFunction*[numberLayers];
-  layerSize[0] = 16;
-  layerSize[1] = 1;
-  layerType[0] = getLayerType("logsig");
-  layerType[1] = getLayerType("purelin");
-
-  Network network(numberLayers, layerSize, layerType, inputDimension);
-
-  char* testFile = "licks.in";
+  char* testFile = argv[2];
 
   std::cout << "test file: " << testFile << std::endl;
 
   std::vector<double> weights;
 
+  layerSize = new int[numberLayers];
+  layerType = new ActivationFunction*[numberLayers];
+
+  loadStats(weightStream);
+
+  Network network(numberLayers, layerSize, layerType, inputDimension);
+
   int layer, neuron;
   double sensitivity;
   while (weightStream >> layer) {
   	weightStream >> neuron;
-  	getNextNeuronWeights(weightStream, weights);
-    std::cout << "sensitivity " << sensitivity << std::endl;
+  	loadNextNeuronWeights(weightStream, weights);
     weightStream >> sensitivity;
     network.setFixedSensitivity(layer, neuron, sensitivity);
   	for (std::vector<double>::size_type i = 0; i < weights.size(); i++) {
   		network.setWeight(layer, neuron, i, weights.at(i));
   	}
   }
-  network.showWeights("final");
+  network.showWeights("set");
 }

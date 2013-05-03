@@ -44,6 +44,8 @@ void Network::init(int _numberLayers, int* layerSize, ActivationFunction** type,
   
   layer = new Layer*[numberLayers];
 
+  inputDimension = _inputDimension;
+
   // FIX: This assumes at least one hidden layer, probably not a good idea.
 
   assert(layerSize);
@@ -271,6 +273,17 @@ void Network::saveWeights(std::ofstream& weightStream)
     layer[i]->saveWeights(weightStream);
     }
   }
+
+void Network::saveStats(std::ofstream& weightStream)
+{
+  weightStream << inputDimension << std::endl;
+  weightStream << numberLayers << std::endl;
+  for (int i = 0; i < numberLayers; i++)
+  {
+    weightStream << layer[i]->getSize() << std::endl;
+    weightStream << layer[i]->getType() << std::endl;
+  }
+}
 
 /**
  * destructor

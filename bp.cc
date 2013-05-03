@@ -609,6 +609,7 @@ if( Trace::atLevel(1) )
 std::cout << "\nFinal Weights:" << std::endl;
 
 network.showWeights("final");
+network.saveStats(weightStream);
 network.saveWeights(weightStream);
 
 // Show performance on all samples

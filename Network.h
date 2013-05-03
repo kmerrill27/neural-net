@@ -17,6 +17,8 @@ class Network
 {
 protected:
 
+int inputDimension;
+
 int numberLayers;
 
 int lastLayer;
@@ -146,6 +148,8 @@ void showWeights(const char* msg) const;
  */
 
 void saveWeights(std::ofstream& weightStream);
+
+void saveStats(std::ofstream& weightStream);
 
 /**
  * destructor
