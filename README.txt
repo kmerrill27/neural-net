@@ -1,16 +1,31 @@
 README:
 
-Train a multi-level perceptron by backpropagation or resilient backpropagation (rprop).
+
+Run a multi-level perceptron on a given set of samples, loading in weights from a file.
 
 Compile on a Linux system with 
 
 make
 
+Sample run script to run network with attributes specified in licks.weights.save on samples
+in test.sample.in and save outputs to outputs.save:
+
+./test licks.weights.save test.sample.in outputs.save
+
+
+--------------------------------------------------------------------
+
+
+Train a multi-level perceptron by backpropagation or resilient backpropagation (rprop).
+
+NOTE: To retrain the network and save new weights to licks.weights.save, change makefile
+to compile bp instead of test. Then:
+
 A sample run script is
 
 ./licks.rprop.sh
 
-which will train the network on the licks in licks.in
+which will train the network on the licks in all.in
 
 
 For usage of the program, type

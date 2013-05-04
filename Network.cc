@@ -116,6 +116,14 @@ void Network::showOutput()
   layer[lastLayer]->showOutput();
   }
 
+/**
+ * Save the output of the network to a file.
+ */
+
+void Network::saveOutput(std::ofstream& outputStream)
+  {
+  layer[lastLayer]->saveOutput(outputStream);
+  }
 
 /**
  * Compute the error as compared with the output of a given Sample.
@@ -173,6 +181,14 @@ void Network::setSensitivity(const Sample& sample)
     layer[i]->setSensitivity(*(layer[i+1]));
     }
   }
+
+/**
+ * Set sensitivity of specified neuron.
+ *
+ * @param i layer index of layer to be set
+ * @param j neuron index of neuron to be set
+ * @param sensitivity fixed sensitivity value 
+ */
 
 void Network::setFixedSensitivity(int i, int j, double sensitivity)
   {
@@ -273,6 +289,10 @@ void Network::saveWeights(std::ofstream& weightStream)
     layer[i]->saveWeights(weightStream);
     }
   }
+
+/**
+* Save input dimension and layer attributes to a file.
+*/
 
 void Network::saveStats(std::ofstream& weightStream)
 {

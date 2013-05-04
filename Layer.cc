@@ -235,6 +235,13 @@ void Layer::showOutput() const
     }
   }
 
+void Layer::saveOutput(std::ofstream& outputStream)
+{
+for( int i = 0; i < numberInLayer; i++ )
+  {
+  outputStream << neuron[i].getOutput() << std::endl;
+  }
+}
 
 /**
  * Set the sensitivity of the Neurons in the HiddenLayer,

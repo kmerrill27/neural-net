@@ -257,6 +257,10 @@ void Neuron::setSensitivity(double factor)
   sensitivity = deriv*factor;
   }
 
+/**
+ * Set the sensitivity of this neuron to specified argument - i.e. without first multiplying
+ * by the derivative from the most recent activation.
+ */
 void Neuron::setFixedSensitivity(double s)
 {
   sensitivity = s;
@@ -301,7 +305,8 @@ void Neuron::showWeights(const char* title)
 
 void Neuron::saveWeights(std::ofstream& weightStream)
   {
-  weightStream << layerIndex << std::endl << neuronIndex << std::endl;
+  weightStream << layerIndex << std::endl;
+  weightStream << neuronIndex << std::endl;
   weightStream << numberOfInputs << std::endl;
   for( int j = 0; j <= numberOfInputs; j++ )
     {

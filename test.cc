@@ -1,32 +1,31 @@
-#include <fstream>
-#include <iostream>
+// file:    test.cc
+// author:  Kim Merrill
+// purpose: runs test samples through pre-trained multi-layer neural network,
+// loading in weights from a file
+
+/**
+ * Loads in network attributes (weights, etc.) from file and runs
+ * samples through network, saving outputs to file.
+ *
+ * ./test <weight file> <input file> <outputs file>
+ * e.x. ./test licks.weights.save test.sample.in outputs.save
+ */
+
 #include <vector>
 #include <string>
-#include <list>
 
-#include "Network.h"
-#include "ActivationFunction.h"
-#include "Logsig.h"
-#include "Purelin.h"
+#include "helper.h"
 
-const int	minimumParameters = 2;
+const int	minimumParameters = 3;
 
 int inputDimension;
 int numberLayers;
 int* layerSize;
 ActivationFunction** layerType;
 
-ActivationFunction* logsig  = new Logsig();
-ActivationFunction* purelin = new Purelin();
-
-ActivationFunction* getLayerType(std::string name)
-  {
-  if( name == "logsig" )   return logsig;
-  if( name == "purelin" )  return purelin;
-
-  std::cout << "error, unrecognized function: " << name << std::endl;
-  exit(1);  
-  }
+/**
+ * Read in neuron weights from file.
+ */
 
 void loadNextNeuronWeights(std::ifstream& weightStream, std::vector<double>& weights)
 {
@@ -39,6 +38,11 @@ void loadNextNeuronWeights(std::ifstream& weightStream, std::vector<double>& wei
       weights.push_back(weight);
     }
 }
+
+/**
+ * Read in network attributes (input dimension, number of layers, and layer types + sizes)
+ * from file.
+ */
 
 void loadStats(std::ifstream& weightStream)
 {
@@ -60,92 +64,6 @@ void loadStats(std::ifstream& weightStream)
 }
 
 /**
- * Get samples from standard input.
- */
-
-void getSamples(char* inputFile, int& outputDimension, int& inputDimension, std::list<Sample*>& listOfSamples)
-  {
-  std::ifstream in(inputFile);
-
-  if( !in )
-    {
-    std::cout << "Input file " << inputFile << " not found." << std::endl;
-    }
-
-  // Get the dimensions from the input file
-
-  if( !(in >> outputDimension && in >> inputDimension) )
-    {
-    std::cout << "Insufficient data file, aborting" << std::endl;
-    exit(1);
-    }
-
-  std::cout << "\nOutput dimension is " << outputDimension << "." << std::endl;
-  std::cout << "\nInput dimension is " << inputDimension << "." << std::endl;
-
-  if( outputDimension < 0 || inputDimension < 0 )
-    {
-    std::cout << "Dimensions must be non-negative, aborting" << std::endl;
-    exit(1);
-    }
-
-  // Get the training samples, saving them in a list.
-
-  double output, input;
-
-  while( in >> output )
-    {
-    // There is at least one more sample.
-
-    Sample* thisSample = new Sample(outputDimension, inputDimension);
-    
-    // Set the first output value.
-
-    thisSample->setOutput(0, output);        
-
-    int i;
-
-    // Set any additional output values.
-
-    for( i = 1; i < outputDimension && in >> output; i++  )
-      {
-      thisSample->setOutput(i, output);
-      }
-
-    if( i+1 < outputDimension )
-      {
-      std::cout << "Last sample only had " << i+1
-                << " out of " << outputDimension
-    << " inputs, aborting." 
-    << std::endl;
-      exit(1);
-      }
-
-
-    // Set the input values.
-
-    for( i = 0; i < inputDimension && in >> input; i++  )
-      {
-      thisSample->setInput(i, input);
-      }
-
-    // Check for incomplete input sample.  
-    // i should be inputDimension-1 if complete.
-
-    if( i+1 < inputDimension )
-      {
-      std::cout << "Last sample only had " << i+1
-                << " out of " << inputDimension
-    << " inputs, aborting." 
-    << std::endl;
-      exit(1);
-      }
-
-    listOfSamples.push_back(thisSample);
-    }
- }
-
-/**
  * main program reads in saved weights and runs samples through network.
  */
 
@@ -154,19 +72,38 @@ int main(int argc, char** argv)
 
 if( argc <= minimumParameters )
   {
-  std::cout << "parameters: <saved weight file> <test file>" << std::endl;
+  std::cout << "parameters: <saved weight file> <test file> <output file>" << std::endl;
   exit(0);
   }
 
-  char* weightFilename = argv[1];
+  char* weightFile = argv[1];
+  std::cout << "weight file: " << weightFile << std::endl;
+  std::ifstream weightStream(weightFile);
 
-  std::cout << "weight file: " << weightFilename << std::endl;
-
-  std::ifstream weightStream(weightFilename);
+  if( weightStream )
+  {
+    printf("Weights will be loaded from: %s\n", weightFile);
+  }
+  else
+  {
+    printf("Could not find weight file: %s\n", weightFile);
+  }
 
   char* testFile = argv[2];
-
   std::cout << "test file: " << testFile << std::endl;
+
+  char* outputFile = argv[3];
+  std::cout << "output file: " << outputFile << std::endl;
+  std::ofstream outputStream(outputFile);
+
+  if( outputStream )
+  {
+    printf("Outputs will be saved in: %s\n", outputFile);
+  }
+  else
+  {
+    printf("Could not create outputs file: %s\n", outputFile);
+  }
 
   std::vector<double> weights;
 
@@ -179,6 +116,8 @@ if( argc <= minimumParameters )
 
   int layer, neuron;
   double sensitivity;
+
+  // Set up neuron weights and sensitivities one-by-one
   while (weightStream >> layer) {
   	weightStream >> neuron;
   	loadNextNeuronWeights(weightStream, weights);
@@ -197,50 +136,8 @@ std::list<Sample*> testSamples;      // list of pointers to test samples
 
 getSamples(testFile, outputDimension2, inputDimension2, testSamples);
 
-double mse = 0;
+double mse;
 
-double usageError = 0;
-
-for( std::list<Sample*>::iterator sample = testSamples.begin();
-     sample != testSamples.end();
-     sample++
-   )
-  {
-
-#if 0
-// Show sample outpus commented out for brevity
-  printf("----------------------------------------------------------------------\n");
-  printf("sample ");    
-  (*sample)->show();
-  printf("\n");  
-#endif
-
-  // Final evaluation with "use"
-
-  network.use(**sample);
-
-  double sampleSSE = network.computeUsageError(**sample);
-
-  printf("\nusage outputs:    ");
-  network.showOutput();
-  printf(", sample usage sse: % 6.3f%s   \n", 
-         sampleSSE, sampleSSE > 0 ? " (non-zero)": "");
-
-  usageError += sampleSSE;
-
-
-  // Final evaluation with "fire"
-
-  network.fire(**sample);
-
-  sampleSSE = network.computeError(**sample);
-
-  mse += sampleSSE;
-
-  printf("test outputs: ");
-  network.showOutput();
-  printf(", sample test sse: % 6.3f\n", sampleSSE);
-  printf("\n");
-
-  }
+// Run net on test samples
+runSamples(mse, testSamples, network, outputStream);
 }

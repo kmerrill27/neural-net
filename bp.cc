@@ -38,26 +38,12 @@
  */
 
 #include <assert.h>
-#include <iostream>
-#include <fstream>
 #include <math.h>
-#include <list>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 
-#include "ActivationFunction.h"
-#include "Hardlim.h"
-#include "Hardlims.h"
-#include "Logsig.h"
-#include "Network.h"
-#include "Onehot.h"
-#include "Purelin.h"
-#include "Sample.h"
-#include "Satlin.h"
-#include "Satlins.h"
-#include "Tansig.h"
-#include "Trace.h"
+#include "helper.h"
 
 enum  MODE {ONLINE = 0, BATCH = 1, RPROP = 2};
 
@@ -79,117 +65,6 @@ const double  defaultLearningRate        = 0.01;
 const int     defaultTrace               = 1;
 
 const int     minimumParameters          = 9;
-
-ActivationFunction* hardlim  = new Hardlim();
-ActivationFunction* hardlims = new Hardlims();
-ActivationFunction* onehot   = new Onehot();
-ActivationFunction* logsig   = new Logsig();
-ActivationFunction* purelin  = new Purelin();
-ActivationFunction* satlin   = new Satlin();
-ActivationFunction* satlins  = new Satlins();
-ActivationFunction* tansig   = new Tansig();
-
-ActivationFunction* getLayerType(std::string name)
-  {
-  if( name == "hardlim" )  return hardlim;
-  if( name == "hardlims" ) return hardlims;
-  if( name == "logsig" )   return logsig;
-  if( name == "onehot" )   return onehot;
-  if( name == "purelin" )  return purelin;
-  if( name == "satlin" )   return satlin;
-  if( name == "satlins" )  return satlins;
-  if( name == "tansig" )   return tansig;
-
-  std::cout << "error, unrecognized function: " << name << std::endl;
-  exit(1);  
-  }
-
-/**
- * Get samples from standard input.
- */
-
-void getSamples(char* inputFile, int& outputDimension, int& inputDimension, std::list<Sample*>& listOfSamples)
-  {
-  std::ifstream in(inputFile);
-
-  if( !in )
-    {
-    std::cout << "Input file " << inputFile << " not found." << std::endl;
-    }
-
-  // Get the dimensions from the input file
-
-  if( !(in >> outputDimension && in >> inputDimension) )
-    {
-    std::cout << "Insufficient data file, aborting" << std::endl;
-    exit(1);
-    }
-
-  std::cout << "\nOutput dimension is " << outputDimension << "." << std::endl;
-  std::cout << "\nInput dimension is " << inputDimension << "." << std::endl;
-
-  if( outputDimension < 0 || inputDimension < 0 )
-    {
-    std::cout << "Dimensions must be non-negative, aborting" << std::endl;
-    exit(1);
-    }
-
-  // Get the training samples, saving them in a list.
-
-  double output, input;
-
-  while( in >> output )
-    {
-    // There is at least one more sample.
-
-    Sample* thisSample = new Sample(outputDimension, inputDimension);
-    
-    // Set the first output value.
-
-    thisSample->setOutput(0, output);        
-
-    int i;
-
-    // Set any additional output values.
-
-    for( i = 1; i < outputDimension && in >> output; i++  )
-      {
-      thisSample->setOutput(i, output);
-      }
-
-    if( i+1 < outputDimension )
-      {
-      std::cout << "Last sample only had " << i+1
-                << " out of " << outputDimension
-		<< " inputs, aborting." 
-		<< std::endl;
-      exit(1);
-      }
-
-
-    // Set the input values.
-
-    for( i = 0; i < inputDimension && in >> input; i++  )
-      {
-      thisSample->setInput(i, input);
-      }
-
-    // Check for incomplete input sample.  
-    // i should be inputDimension-1 if complete.
-
-    if( i+1 < inputDimension )
-      {
-      std::cout << "Last sample only had " << i+1
-                << " out of " << inputDimension
-		<< " inputs, aborting." 
-		<< std::endl;
-      exit(1);
-      }
-
-    listOfSamples.push_back(thisSample);
-    }
- }
-
 
 double getFloat(const char* str)
   {
@@ -269,7 +144,7 @@ if( argc <= minimumParameters )
   std::cout << "parameters: <training file> <max epochs> "
                "<learning rate> <mse goal> <mode: 0 = on-line, 1 = batch, 2 = rprop> <trace> " 
                "<saved weight file> <number of layers> <layer type> <number in layer> ... "
-               "<test file> ..."
+               "<test file> <output file>"
             << std::endl;
   exit(0);
   }
@@ -298,17 +173,17 @@ mode = (MODE)modeInt;
 
 Trace::setLevel(getInteger(argv[6]));
 
-char* weightFilename = argv[7];
+char* weightFile = argv[7];
 
-std::ofstream weightStream(weightFilename);
+std::ofstream weightStream(weightFile);
 
 if( weightStream )
   {
-  printf("Weights will be saved in: %s\n", weightFilename);
+  printf("Weights will be saved in: %s\n", weightFile);
   }
 else
   {
-  printf("Could not create weight file: %s\n", weightFilename);
+  printf("Could not create weight file: %s\n", weightFile);
   }
 
 numberLayers = getInteger(argv[8]);
@@ -350,7 +225,7 @@ if( Trace::atLevel(1) )
     {
     std::cout << "    " << layerType[i]->getName() 
               << " (" << layerSize[i] << " "
-              << (layerType[i] == onehot ? "categories" : "neurons")
+              << (layerType[i]->getName() == "onehot" ? "categories" : "neurons")
               << ")" << std::endl;
     }
 
@@ -368,7 +243,7 @@ if( Trace::atLevel(1) )
   }
 
 
-if( argc < parametersNeeded )
+if( argc <= parametersNeeded )
   {
   std::cout << "no test file specified" << std::endl;
   exit(1);
@@ -377,6 +252,28 @@ if( argc < parametersNeeded )
 char* testFile = argv[parametersNeeded];
 
 std::cout << "test file: " << testFile << std::endl;
+
+if (argc <= parametersNeeded+1 )
+{
+  std::cout << "no outputs file specified" << std::endl;
+  exit(1);
+}
+
+char* outputFile = argv[parametersNeeded+1];
+
+std::cout << "outputs file: " << outputFile << std::endl;
+
+std::ofstream outputStream(outputFile);
+
+if( outputStream )
+  {
+  printf("Outputs will be saved in: %s\n", outputFile);
+  }
+else
+  {
+  printf("Could not create outputs file: %s\n", outputFile);
+  exit(1);
+  }
 
 int inputDimension;		     // dimension of input
 int outputDimension;		     // dimension of output
@@ -609,6 +506,8 @@ if( Trace::atLevel(1) )
 std::cout << "\nFinal Weights:" << std::endl;
 
 network.showWeights("final");
+
+// Write final trained network weights and info to file for later use.
 network.saveStats(weightStream);
 network.saveWeights(weightStream);
 
@@ -618,52 +517,8 @@ std::cout << "\nFinal performance on all test samples:" << std::endl;
 
 signAgreement = 0;
 
-mse = 0;
-
-double usageError = 0;
-
-for( std::list<Sample*>::iterator sample = testSamples.begin();
-     sample != testSamples.end();
-     sample++
-   )
-  {
-
-#if 0
-// Show sample outpus commented out for brevity
-  printf("----------------------------------------------------------------------\n");
-  printf("sample ");    
-  (*sample)->show();
-  printf("\n");  
-#endif
-
-  // Final evaluation with "use"
-
-  network.use(**sample);
-
-  double sampleSSE = network.computeUsageError(**sample);
-
-  printf("\nusage outputs:    ");
-  network.showOutput();
-  printf(", sample usage sse: % 6.3f%s   \n", 
-         sampleSSE, sampleSSE > 0 ? " (non-zero)": "");
-
-  usageError += sampleSSE;
-
-
-  // Final evaluation with "fire"
-
-  network.fire(**sample);
-
-  sampleSSE = network.computeError(**sample);
-
-  mse += sampleSSE;
-
-  printf("test outputs: ");
-  network.showOutput();
-  printf(", sample test sse: % 6.3f\n", sampleSSE);
-  printf("\n");
-
-  }
+// Run on test samples
+double usageError = runSamples(mse, testSamples, network, outputStream);
 
 std::cout << "\nAfter " << epoch-1 << " epochs using "
           << modeName[mode];

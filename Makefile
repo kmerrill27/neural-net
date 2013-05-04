@@ -4,7 +4,7 @@
 
 # the exeuctable being made
 
-EXE = bp
+EXE = test
 
 
 # the C++ compiler
@@ -43,6 +43,7 @@ clean :
 OBJS =  test.o \
         Hardlim.o \
         Hardlims.o \
+        helper.o \
         Network.o \
         Layer.o \
         Logsig.o \
@@ -62,6 +63,9 @@ $(EXE) : $(OBJS)
 
 test.o : test.cc
 	$(CXX) -c $(CXXFLAGS) test.cc
+
+helper.o : helper.h helper.cc
+	$(CXX) -c $(CXXFLAGS) helper.cc
 
 Hardlim.o : Hardlim.h Hardlim.cc ActivationFunction.h
 	$(CXX) -c $(CXXFLAGS) Hardlim.cc

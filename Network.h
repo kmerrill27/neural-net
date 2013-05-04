@@ -79,6 +79,11 @@ double getOutput();
 
 void showOutput();
 
+/**
+ * Save the output of the network to a file.
+ */
+
+void saveOutput(std::ofstream& outputStream);
 
 /**
  * Compute the error as compared with the output of a given Sample.
@@ -108,6 +113,13 @@ int computeUsageError(const Sample& sample);
 
 void setSensitivity(const Sample& sample);
 
+/**
+ * Set specified neuron's sensitivity.
+ *
+ * @param i index of layer to be modified
+ * @param j index of neuron to be set
+ * @param sensitivity fixed sensitivity value
+ */
 void setFixedSensitivity(int i, int j, double sensitivity);
 
 /**
@@ -148,6 +160,10 @@ void showWeights(const char* msg) const;
  */
 
 void saveWeights(std::ofstream& weightStream);
+
+/**
+* Save input dimension and layer attributes (number, size, and type) to a file.
+*/
 
 void saveStats(std::ofstream& weightStream);
 

@@ -192,6 +192,11 @@ void setWeight(int j, double _weight);
 
 void setSensitivity(double factor);
 
+/**
+ * Set sensitivity of the neuron to the specified argument - i.e. without first multiplying
+ * by the derivative from the most recent activation.
+ * Used for setting up a network without training first.
+ **/
 void setFixedSensitivity(double sensitivity);
 
 /**
@@ -209,6 +214,20 @@ void showWeights(const char* title);
 
 /**
  * Save the sensitivity and weights to a file.
+ * File is saved in following format:
+ *
+ * Input dimension
+ * Number of layers
+ * Number of neurons in layer
+ * Layer type
+ * ... (^ for each layer)
+ * Layer index
+ * Neuron index
+ * Neuron input dimension (number of weights)
+ * Weight 1
+ * Weight 2
+ * ... (^ for each neuron)
+ *
  */
 
 void saveWeights(std::ofstream& weightStream);

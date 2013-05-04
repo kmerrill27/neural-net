@@ -152,7 +152,20 @@ void showWeights(const char* title) const;
 
 void saveWeights(std::ofstream& weightStream);
 
+/**
+ * Set sensitivty without weighting by deriv factor.
+ * 
+ * @param i index of neuron to be set
+ * @param sensitivity fixed sensitivity value
+ */
+
 void setFixedSensitivity(int i, double sensitivity);
+
+/**
+ * Save the network output to a file.
+ */
+
+void saveOutput(std::ofstream& outputStream);
 
 /**
  * Show the output on the standard output stream.
