@@ -1,5 +1,6 @@
 // file:    Neuron.h
 // author:  Robert Keller
+// modified by: Kim Merrill (5/3/13)
 // purpose: Header file for Neuron class
 // $Id: Neuron.h,v 1.2 2005/05/26 22:22:36 keller Exp keller $
 

@@ -1,5 +1,6 @@
 // file:    Layer.cc
 // author:  Robert Keller
+// modified by: Kim Merrill (5/3/13)
 // purpose: C++ code for Layer class
 // $Id: Layer.cc,v 1.3 2005/05/26 22:22:36 keller Exp keller $
 

@@ -1,5 +1,6 @@
 // file:    Network.h
 // author:  Robert Keller
+// modified by: Kim Merrill (5/3/13)
 // purpose: Header file for Network class
 
 #include "ActivationFunction.h"

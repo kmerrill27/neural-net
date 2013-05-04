@@ -1,5 +1,6 @@
 // file:    bp.cc
 // author:  Robert Keller
+// modified by: Kim Merrill (5/3/13)
 // purpose: multi-layer neural network for backpropagation
 // RCS: $Id: bp.cc,v 1.7 2010/09/21 17:40:09 keller Exp keller $
 

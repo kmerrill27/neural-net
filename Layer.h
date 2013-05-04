@@ -1,5 +1,6 @@
 // file:    Layer.h
 // author:  Robert Keller
+// modified by: Kim Merrill (5/3/13)
 // purpose: Header file for Layer class
 
 #ifndef __Layer__
